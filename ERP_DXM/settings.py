@@ -66,7 +66,7 @@ SECRET_KEY = 'd4s718p(#5&5w)5oxys!lmn@y$fwx-%zyyv*8y7hmrpd4mz8#l'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config['debug']
 
-ALLOWED_HOSTS = ['127.0.0.1', 'dxmconsultoria.pythonanywhere.com/']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
