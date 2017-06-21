@@ -14,6 +14,9 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # bibliotecas de configuracao
 try:
     from .config import config, nomeConfig
@@ -30,7 +33,7 @@ except:
                 'server': False,
                 'debug': True,
                 'database_engine': 'django.db.backends.sqlite3',
-                'database_name': 'erp_dxm.sqlite3',
+                'database_name': os.path.join(BASE_DIR, 'erp_dxm.sqlite3'),
                 'database_user': '',
                 'database_password': '',
                 'database_host': '',
@@ -53,10 +56,6 @@ except:
 
 #Define qual ambiente irá usar
 config = config[nomeConfig]
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -122,10 +121,10 @@ WSGI_APPLICATION = 'ERP_DXM.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': config['database_engine'],
-        'NAME': os.path.join(BASE_DIR, config['database_name']),
-        'USER': os.path.join(BASE_DIR, config['database_user']),
-        'PASSWORD': os.path.join(BASE_DIR, config['database_password']),
-        'HOST': os.path.join(BASE_DIR, config['database_host']),
+        'NAME': config['database_name'],
+        'USER': config['database_user'],
+        'PASSWORD': config['database_password'],
+        'HOST': config['database_host'],
     }
 }
 
