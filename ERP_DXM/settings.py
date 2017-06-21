@@ -123,6 +123,9 @@ DATABASES = {
     'default': {
         'ENGINE': config['database_engine'],
         'NAME': os.path.join(BASE_DIR, config['database_name']),
+        'USER': os.path.join(BASE_DIR, config['database_user']),
+        'PASSWORD': os.path.join(BASE_DIR, config['database_password']),
+        'HOST': os.path.join(BASE_DIR, config['database_host']),
     }
 }
 
