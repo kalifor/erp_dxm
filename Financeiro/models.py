@@ -48,6 +48,9 @@ class Cliente(models.Model):
     def __unicode__(self):
         return self.nome
 
+    def __str__(self):
+        return self.nome
+
     class Meta:
         ordering = ['-id']
         verbose_name = u'Cliente'
@@ -66,6 +69,9 @@ class Fornecedor(models.Model):
     def __unicode__(self):
         return self.nome
 
+    def __str__(self):
+        return self.nome
+
     class Meta:
         ordering = ['-id']
         verbose_name = u'Fornecedor'
@@ -82,6 +88,9 @@ class Natureza(models.Model):
     def __unicode__(self):
         return self.nome
 
+    def __str__(self):
+        return self.nome
+
     class Meta:
         ordering = ['-id']
         verbose_name = u'Natureza'
@@ -96,6 +105,9 @@ class Analista(models.Model):
                                            null=True)
 
     def __unicode__(self):
+        return self.nome
+
+    def __str__(self):
         return self.nome
 
     class Meta:
@@ -152,6 +164,9 @@ class Nota(models.Model):
         super(Nota, self).save(*args, **kwargs)
 
     def __unicode__(self):
+        return u'Nota '+str(self.id)
+
+    def __str__(self):
         return u'Nota '+str(self.id)
 
     class Meta:
@@ -243,6 +258,9 @@ class Receber(models.Model):
     def __unicode__(self):
         return u'Título '+str(self.id)
 
+    def __str__(self):
+        return u'Título '+str(self.id)
+
     class Meta:
         ordering = ['-id']
         verbose_name = u'Conta a receber'
@@ -276,6 +294,9 @@ class Pagar(models.Model):
         super(Pagar, self).save(*args, **kwargs)
 
     def __unicode__(self):
+        return u'Título ' + str(self.id)
+
+    def __str__(self):
         return u'Título ' + str(self.id)
 
     class Meta:
@@ -339,6 +360,9 @@ class NotaDebito(models.Model):
             pagar_repasse.save()
 
     def __unicode__(self):
+        return 'ND '+str(self.id)
+
+    def __str__(self):
         return 'ND '+str(self.id)
 
     class Meta:
