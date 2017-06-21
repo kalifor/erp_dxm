@@ -6,3 +6,4 @@ erp_dxm.sqlite3
 ERP_DXM_AMBIENTE/
 ERP_DXM/config.py
 migrations
+fixtures
