@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {% trans 'ERP DXM' %}{% endblock %}
+
+{% block extrastyle %}
+    <style>
+        .admin-appicon-Financeiro:before {
+            content: "attach_money";
+        }
+    </style>
+{% endblock %}
+
+
+{% block branding %}
+<h1 id="site-name">{% trans 'ERP DXM' %}</h1>
+{% endblock %}
