@@ -99,6 +99,19 @@ class NotaDebitoAdmin(admin.ModelAdmin):
     model = NotaDebito
     save_on_top = True
 
+    def get_queryset(self, request):
+        """
+        Filter the objects displayed in the change_list to only
+        display those for the currently signed in user.
+        """
+
+        queryset = super(NotaDebitoAdmin, self).get_queryset(request)
+        analista = Analista.objects.filter(Usuário = request.user)
+        if analista:
+            return queryset.filter(analista__in = analista)
+        else:
+            return queryset
+
     def notaDebitoPDF(self, obj):
         if obj.analista:
             return '<a target="_blank" href="%s%s">%s</a>' % (
@@ -119,9 +132,9 @@ class NotaDebitoAdmin(admin.ModelAdmin):
     notaDebito.allow_tags = True
     notaDebito.short_description = 'Nota de débito'
 
-    list_display = ['id', 'cliente_atendimento', 'valor', 'taxa', 'baixa', 'notaDebito', 'despesa', ]
-    list_display_links = ['id', 'cliente_atendimento', 'valor', 'taxa', 'baixa', 'despesa', ]
-    search_fields = ['id', 'cliente_atendimento', 'valor', 'taxa', 'baixa', 'despesa', ]
+    list_display = ['analista', 'cliente_atendimento', 'valor', 'baixa', 'notaDebito', 'despesa', ]
+    list_display_links = ['analista', 'cliente_atendimento', 'valor', 'baixa', 'notaDebito', 'despesa', ]
+    search_fields = ['analista', 'cliente_atendimento', 'valor', 'baixa', 'notaDebito', 'despesa',  ]
     list_filter = (('cliente_atendimento',  admin.RelatedOnlyFieldListFilter),
                    ('analista', admin.RelatedOnlyFieldListFilter),
                    'baixa',)

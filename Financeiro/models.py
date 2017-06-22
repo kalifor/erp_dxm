@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from datetime import date, datetime
 from django.db.models import Sum
+from django.contrib.auth.models import User
 
 TIPO_CHOICES = (
         ('NDE', u'Nota de débito'),
@@ -100,10 +101,10 @@ class Natureza(models.Model):
 # Analista
 class Analista(models.Model):
     nome = models.CharField(max_length=64)
+    usuario = models.ForeignKey(User, name=u"Usuário", related_name="Usuario_analista", blank=True, null=True)
     fornecedor_repasse = models.ForeignKey(u"Fornecedor", related_name="Fornecedor_repasse", blank=True, null=True)
     aliquota_despesa = models.DecimalField(u'Percentual repasse de despesa', max_digits=5, decimal_places=2, blank=True,
                                            null=True)
-
     def __unicode__(self):
         return self.nome
 
@@ -225,7 +226,7 @@ class Receber(models.Model):
 
         # Gera contas a pagar de repasse, se houver na natureza
         pagar_repasse = ''
-        if self.analista.fornecedor_repasse:
+        if self.valor_repasse > 0 and self.analista.fornecedor_repasse:
             # Se for alteração já possui ID
             if self.id:
                 try:
