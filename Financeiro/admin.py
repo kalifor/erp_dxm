@@ -30,7 +30,7 @@ class NotaAdmin(admin.ModelAdmin):
 admin.site.register(Nota, NotaAdmin)
 
 
-class ReceberAdmin(admin.ModelAdmin):
+class ReceberGeralAdmin(admin.ModelAdmin):
     """
     Responsável por manipular o admin Receber
     """
@@ -57,7 +57,53 @@ class ReceberAdmin(admin.ModelAdmin):
         }),
     )
 
-admin.site.register(Receber, ReceberAdmin)
+admin.site.register(Receber, ReceberGeralAdmin)
+
+
+class ReceberAnalista(Receber):
+    class Meta:
+        proxy = True
+        app_label = 'Financeiro'
+        verbose_name = u'Conta a receber Analista'
+        verbose_name_plural = u'Contas a receber Analista'
+
+class ReceberAnalistaAdmin(ReceberGeralAdmin):
+    """
+    Responsável por manipular o admin Receber
+    """
+
+    icon = '<i class="material-icons">call_received</i>'
+
+    model = Receber
+    save_on_top = True
+
+    list_display = ['id', 'cliente', 'analista', 'valor', 'valor_repasse', 'baixa', ]
+    list_display_links = ['id', 'cliente', 'analista', 'valor', 'valor_repasse', 'baixa',]
+    search_fields = ['id', 'cliente', 'analista', 'valor', 'valor_repasse', 'baixa', ]
+    list_filter = ('cliente', 'analista', 'baixa')
+    empty_value_display = ''
+    readonly_fields = ('cliente', 'analista', 'natureza', 'inclusao', 'mes_competencia', 'ano_competencia', 'baixa',
+                       'valor', 'valor_repasse',)
+
+    fieldsets = (
+        ('Dados', {
+            'fields': ('cliente', 'analista', 'natureza', 'inclusao', 'mes_competencia', 'ano_competencia', 'baixa')
+        }),
+        ('Valores', {
+            'fields': ('valor', 'valor_repasse', ),
+        }),
+    )
+
+    def get_queryset(self, request):
+        """
+        Filter the objects displayed in the change_list to only
+        display those for the currently signed in user.
+        """
+
+        querySet = filtro_analista(request, self, ReceberAnalistaAdmin)
+        return querySet
+
+admin.site.register(ReceberAnalista, ReceberAnalistaAdmin)
 
 
 class PagarAdmin(admin.ModelAdmin):
@@ -105,12 +151,8 @@ class NotaDebitoAdmin(admin.ModelAdmin):
         display those for the currently signed in user.
         """
 
-        queryset = super(NotaDebitoAdmin, self).get_queryset(request)
-        analista = Analista.objects.filter(Usuário = request.user)
-        if analista:
-            return queryset.filter(analista__in = analista)
-        else:
-            return queryset
+        querySet = filtro_analista(request, self, NotaDebitoAdmin)
+        return querySet
 
     def notaDebitoPDF(self, obj):
         if obj.analista:
@@ -132,9 +174,9 @@ class NotaDebitoAdmin(admin.ModelAdmin):
     notaDebito.allow_tags = True
     notaDebito.short_description = 'Nota de débito'
 
-    list_display = ['analista', 'cliente_atendimento', 'valor', 'baixa', 'notaDebito', 'despesa', ]
-    list_display_links = ['analista', 'cliente_atendimento', 'valor', 'baixa', 'notaDebito', 'despesa', ]
-    search_fields = ['analista', 'cliente_atendimento', 'valor', 'baixa', 'notaDebito', 'despesa',  ]
+    list_display = ['analista', 'cliente_atendimento', 'valor', 'baixa', 'despesa', 'notaDebito',]
+    list_display_links = ['analista', 'cliente_atendimento', 'valor', 'baixa', 'despesa', 'notaDebito',]
+    search_fields = ['analista', 'cliente_atendimento', 'valor', 'baixa', 'despesa',  'notaDebito',]
     list_filter = (('cliente_atendimento',  admin.RelatedOnlyFieldListFilter),
                    ('analista', admin.RelatedOnlyFieldListFilter),
                    'baixa',)
@@ -189,3 +231,12 @@ class AnalistaAdmin(admin.ModelAdmin):
 
     icon = '<i class="material-icons">people</i>'
 admin.site.register(Analista, AnalistaAdmin)
+
+
+def filtro_analista(request, model, modelAdmin):
+    queryset = super(modelAdmin, model).get_queryset(request)
+    analista = Analista.objects.filter(Usuário=request.user)
+    if analista:
+        return queryset.filter(analista__in=analista)
+    else:
+        return queryset
